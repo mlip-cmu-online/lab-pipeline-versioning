@@ -46,6 +46,17 @@ The dataset is small enough to version in Git for convenience, but in a real pro
 
 ## Setup
 
+### Recommended: GitHub Codespaces
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mlip-cmu-online/lab-pipeline-versioning?quickstart=1)
+
+Open the repository in Codespaces and wait for the `postCreateCommand` to finish.
+It creates `.venv`, installs the tested DVC and Roar versions, and runs a disposable smoke test without changing your lab work.
+Open a new terminal after setup; the virtual environment activates automatically.
+
+You can use the same configuration locally with VS Code's **Dev Containers: Reopen in Container** command.
+The supported Roar path is the supplied Linux container; Windows users should use Codespaces or a DevContainer rather than a native Windows shell.
+
 ### Prerequisites
 
 - Git installed
@@ -62,8 +73,8 @@ The dataset is small enough to version in Git for convenience, but in a real pro
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/AshrithaG/mlip-lab-9.git
-cd mlip-lab-9
+git clone https://github.com/mlip-cmu-online/lab-pipeline-versioning.git
+cd lab-pipeline-versioning
 ```
 
 2. Create and activate a virtual environment:
@@ -79,16 +90,37 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Verify Roar installed correctly:
+4. Verify the pinned tools and pipeline environment:
 
 ```bash
-roar --version
+dvc --version       # 3.67.1
+roar --version      # 0.4.3
+bash scripts/smoke_environment.sh
 ```
+
+The smoke test works in a disposable Git repository and checks `dvc repro`, `dvc exp show`, all three `roar run` steps, `roar dag`, `roar show`, and a credential-free GLaaS registration preview.
+It also reports whether GLaaS is reachable and whether this shell is authenticated.
+
+### Before You Run Roar
+
+Roar records the current Git commit with each job and refuses to run when tracked files have uncommitted changes.
+Commit the DVC work you want to preserve, then confirm that this prints nothing:
+
+```bash
+git status --short
+```
+
+Roar also needs a supported file-I/O tracer.
+The supplied Linux environment selects a compatible backend automatically; run `roar tracer` to see which of preload, eBPF, or ptrace is ready before troubleshooting a failed run.
+
+The DVC remote used later in the lab is `/tmp/dvc-storage`.
+That directory is ephemeral in a Codespace: rebuilding or deleting the Codespace can remove it, so do not treat it as durable evidence or team storage.
+Save the requested command output and GLaaS artifact link or hash outside that directory.
 
 ### Repository Structure
 
 ```
-mlip-lab-9/
+lab-pipeline-versioning/
 ├── data/raw/data.csv          # Breast Cancer Wisconsin dataset (569 samples, 30 features)
 ├── scripts/
 │   ├── preprocess.py          # Train/test split

@@ -135,6 +135,9 @@ dvc push
 
 Now you will run the **same pipeline** using Roar. The key difference: you will not write any configuration file. Roar infers the pipeline by observing what your code actually reads and writes.
 
+Roar requires a clean Git worktree because it attaches each observed job to a commit.
+Finish and commit your DVC changes before continuing, then make sure `git status --short` prints nothing.
+
 ### 2A: Initialize and Run Roar
 
 **Initialize Roar** in the same repository:
@@ -175,20 +178,24 @@ Notice it recorded the exact command, git commit, input/output files with conten
 
 ### 2B: Run Experiments with Roar
 
-Just like you did with DVC, run 2–3 experiments with **different hyperparameters**. Edit `params.yaml` each time, then re-run the pipeline under Roar:
+Just like you did with DVC, run 2–3 experiments with **different hyperparameters**. Edit `params.yaml` each time and commit that parameter version so Roar has a clean, identifiable Git state, then re-run the pipeline:
 
 ```bash
 # Edit params.yaml with your chosen values, then:
+git add params.yaml
+git commit -m "Set Roar experiment parameters"
 roar run python3 scripts/train.py
 roar run python3 scripts/evaluate.py
 ```
 
-Repeat with different parameter values. After each run, inspect what Roar captured:
+Repeat with different parameter values and a new commit for each set. After each run, inspect what Roar captured:
 
 ```bash
 roar dag
-roar show @latest
+roar show
 ```
+
+Use the step number shown by `roar show` or `roar dag` (for example, `roar show @3`) to inspect one job in detail.
 
 Think about: how does Roar track these different runs compared to `dvc exp show`? How would you compare results across runs?
 
@@ -217,18 +224,25 @@ Notice how the DAG now reflects the current state. Roar keeps history but `roar 
 
 Roar can publish lineage to GLaaS (Global Lineage as a Service) so artifacts are globally identifiable by their content hash.
 
-**Authenticate with GLaaS** (free, uses your GitHub account):
+**Authenticate with GLaaS** (an external service that uses your GitHub account):
 
 ```bash
-roar auth register
+roar auth login
 ```
 
-This prints your public key. Go to [glaas.ai](https://glaas.ai/), click "Sign in with GitHub," then paste your key under "SSH key" in your profile.
-
-Test the connection:
+Follow the browser sign-in flow, then test the saved credentials:
 
 ```bash
-roar auth test
+roar auth status
+```
+
+If browser login is unavailable in a headless environment, generate an Ed25519 SSH key, run `roar auth key`, and add the displayed public key to your GLaaS profile.
+Do not commit private keys or authentication tokens.
+
+Preview exactly what Roar will send before publishing anything:
+
+```bash
+roar register --dry-run models/classifier.pkl
 ```
 
 **Register your model artifact**:
@@ -236,6 +250,14 @@ roar auth test
 ```bash
 roar register models/classifier.pkl
 ```
+
+You can rerun the complete environment check with authenticated registration enabled:
+
+```bash
+bash scripts/smoke_environment.sh --with-glaas
+```
+
+That option publishes the disposable smoke-test model privately to your GLaaS account.
 
 **Browse the lineage** at [glaas.ai](https://glaas.ai/):
 

@@ -73,6 +73,12 @@ git add -A
 git commit -m "Commit before Roar run"
 ```
 
+Check that the worktree is now clean before retrying:
+
+```bash
+git status --short
+```
+
 ---
 
 ### A5: `roar dag` — "No active session"
@@ -156,6 +162,8 @@ metrics:
 
 Alternatively, you can run this lab on Linux using your team's VM, where Roar works natively.
 
+The supplied Codespace/DevContainer is the recommended Linux environment and avoids this platform mismatch.
+
 ---
 
 ### A10: `dvc exp run` — experiment fails but `dvc repro` works
@@ -172,3 +180,30 @@ Alternatively, you can run this lab on Linux using your team's VM, where Roar wo
 git add params.yaml scripts/
 git commit -m "Ensure all pipeline inputs are committed"
 ```
+
+---
+
+### A11: GLaaS authentication or registration fails
+
+**Symptom**: `roar auth status` reports that GLaaS is reachable but you are not authenticated, or `roar register` is rejected.
+
+**Cause**: GLaaS is an external, GitHub-authenticated service. Container setup cannot create account credentials for you, and credentials from one Codespace are not automatically available in another.
+
+**Fix**:
+
+1. Run `roar auth login` and complete the browser flow with your GitHub account.
+2. Run `roar auth status` and confirm that the active method is authenticated.
+3. Preview with `roar register --dry-run models/classifier.pkl`.
+4. Register with `roar register models/classifier.pkl`.
+
+Never paste a private SSH key or authentication token into the repository.
+
+---
+
+### A12: Roar cannot select a tracing backend
+
+**Symptom**: `roar run` reports that no tracer is ready, or completes without observing the pipeline's input and output files.
+
+**Cause**: Roar must observe file I/O through preload, eBPF, or ptrace. Native Windows is unsupported, macOS system binaries can block preload tracing, and a restricted Linux container may disable some backends.
+
+**Fix**: Run `roar tracer` to inspect backend readiness. Use the supplied Codespace/DevContainer, where preload or ptrace should be ready, and rerun `bash scripts/smoke_environment.sh` before continuing the lab.
