@@ -25,13 +25,14 @@ The dataset is small enough to version in Git for convenience, but in a real pro
 
 ## Deliverables
 
-- **Deliverable 1 (Run DVC & Roar)**: Complete the step-by-step instructions in [INSTRUCTIONS.md](INSTRUCTIONS.md). Show the TA:
+- **Deliverable 1 (Run DVC & Roar)**: Complete the step-by-step instructions in [INSTRUCTIONS.md](INSTRUCTIONS.md) and save:
   - Your `dvc dag` output and `roar dag` output
   - The registered artifact lineage on [glaas.ai](https://glaas.ai/)
 
-- **Deliverable 2 (Experimentation)**: Run 2–3 experiments with parameters you choose (different from the defaults in `params.yaml`) using **both** DVC and Roar. Show the TA how you compare results across runs in each tool and how you can trace back which data and parameters produced a given model.
+- **Deliverable 2 (Experimentation)**: Run 2–3 experiments with parameters you choose that differ from the defaults in `params.yaml` using **both** DVC and Roar.
+  Save the comparison outputs and explain how to trace a model to the data and parameters that produced it.
 
-- **Deliverable 3 (Reflection)**: Complete the [summary table](#summary-table) below and be prepared to discuss the [reflection questions](#reflection-questions) with the TA.
+- **Deliverable 3 (Reflection)**: Complete the [summary table](#summary-table) and write responses to the [reflection questions](#reflection-questions) below.
 
 ## How to Use This Repo
 
@@ -119,7 +120,8 @@ You should see output showing the data split, trained model parameters, and eval
 
 ## Part 3: Compare and Reflect
 
-You have now used both tools on the same pipeline. Fill in the summary table and be ready to discuss the questions below with the TA. Refer to the official documentation as needed:
+You have now used both tools on the same pipeline.
+Fill in the summary table and answer the questions below, referring to the official documentation as needed:
 
 - [DVC Pipelines Guide](https://dvc.org/doc/user-guide/pipelines)
 - [DVC Experiments Guide](https://dvc.org/doc/user-guide/experiment-management)
