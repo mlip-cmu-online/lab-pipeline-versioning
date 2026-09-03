@@ -1,4 +1,4 @@
-# Lab 9 : Data & Pipeline Versioning — DVC and Roar
+# Lab: Data & Pipeline Versioning — DVC and Roar
 
 In this lab you will run the same ML pipeline through two tools that take fundamentally different approaches to pipeline tracking and reproducibility:
 
