@@ -20,5 +20,3 @@ ENV/
 .dvc/cache
 .dvc/tmp
 .roar/
-evidence/
-submission/

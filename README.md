@@ -23,95 +23,11 @@ This lab uses the **Breast Cancer Wisconsin (Diagnostic)** dataset (569 samples,
 
 The dataset is small enough to version in Git for convenience, but in a real project this is exactly the kind of artifact you would manage with DVC.
 
-## Deliverables
-
-- **Deliverable 1 (Run DVC & Roar)**: Complete the step-by-step instructions in [INSTRUCTIONS.md](INSTRUCTIONS.md) and save:
-  - Your `dvc dag` output and `roar dag` output
-  - The registered artifact lineage on [glaas.ai](https://glaas.ai/)
-
-- **Deliverable 2 (Experimentation)**: Run 2–3 experiments with parameters you choose that differ from the defaults in `params.yaml` using **both** DVC and Roar.
-  Save the comparison outputs and explain how to trace a model to the data and parameters that produced it.
-
-- **Deliverable 3 (Reflection)**: Complete the [summary table](#summary-table) and write responses to the [reflection questions](#reflection-questions) below.
-
-## Generate the Submission Report
-
-Complete the lab at a committed repository revision and save the full command outputs while DVC and Roar are available. For example:
-
-```bash
-mkdir -p evidence
-dvc exp show --no-pager | tee evidence/dvc-exp-show.txt
-roar show | tee evidence/roar-show.txt
-dvc dag | tee evidence/dvc-dag.txt
-roar dag | tee evidence/roar-dag.txt
-```
-
-Create `evidence/experiments.json` with at least two experiments from each tool. Use the exact DVC experiment names and Roar job references shown in the saved outputs:
-
-```json
-{
-  "dvc_experiments": [
-    {
-      "run_id": "exp-maple",
-      "parameters": {"n_estimators": 150, "max_depth": 12},
-      "results": {"accuracy": 0.9561}
-    },
-    {
-      "run_id": "exp-cedar",
-      "parameters": {"n_estimators": 220, "max_depth": 8},
-      "results": {"accuracy": 0.9649}
-    }
-  ],
-  "roar_experiments": [
-    {
-      "run_id": "@4",
-      "parameters": {"n_estimators": 150, "max_depth": 12},
-      "results": {"accuracy": 0.9561}
-    },
-    {
-      "run_id": "@6",
-      "parameters": {"n_estimators": 220, "max_depth": 8},
-      "results": {"accuracy": 0.9649}
-    }
-  ]
-}
-```
-
-Create `evidence/lineage.json` that ties the registered model to a job reference in `roar-show.txt`. Include the non-secret artifact hash, a stable GLaaS link, or both:
-
-```json
-{
-  "roar_run_id": "@6",
-  "artifact_hash": "replace-with-the-displayed-artifact-hash",
-  "glaas_url": "https://glaas.ai/replace-with-the-stable-artifact-path"
-}
-```
-
-If you cannot save a hash or stable link, keep `roar_run_id` in that file and save a PNG, JPEG, WebP, or GIF screenshot of the GLaaS lineage page. Then generate the report from the repository root:
-
-```bash
-python3 scripts/generate-pipeline-versioning-submission.py \
-  --learner "Your name" \
-  --repository-url "https://github.com/your-account/lab-pipeline-versioning" \
-  --dvc-exp-show evidence/dvc-exp-show.txt \
-  --roar-show evidence/roar-show.txt \
-  --dvc-dag evidence/dvc-dag.txt \
-  --roar-dag evidence/roar-dag.txt \
-  --experiments evidence/experiments.json \
-  --lineage-reference evidence/lineage.json \
-  --glaas-screenshot evidence/glaas-lineage.png
-```
-
-Omit `--glaas-screenshot` when the lineage JSON contains a hash or stable link and you do not need companion image evidence. Open `submission/pipeline-versioning-report.html` and correct every item marked `missing` before uploading it to Canvas. Keep `submission/pipeline-versioning-manifest.json` with the raw evidence, and answer the reproduction/lineage and tool-choice interpretation questions separately in Canvas.
-
-The command reads local files and Git metadata only. It does not run DVC or Roar, restore `/tmp/dvc-storage`, or contact GitHub or GLaaS. It checks the immutable pipeline revision, required output structure, experiment records, matching DVC and Roar run identifiers, lineage reference, durable embedding, and obvious plaintext credentials. It cannot detect a credential visible inside a screenshot, so review the finished report before uploading it.
-The starter ignores `evidence/` and `submission/` so saved audit files do not interfere with Roar's clean-worktree requirement; the generated HTML embeds their contents for durable review.
-
 ## How to Use This Repo
 
 | File | What it contains |
 |------|-----------------|
-| **This README** | Overview, setup, reflection questions, and deliverables |
+| **This README** | Overview, setup, and reflection questions |
 | [**INSTRUCTIONS.md**](INSTRUCTIONS.md) | Step-by-step commands for DVC (Part 1) and Roar (Part 2) |
 | [**TROUBLESHOOTING.md**](TROUBLESHOOTING.md) | Common errors and how to fix them |
 
@@ -188,7 +104,6 @@ The supplied Linux environment selects a compatible backend automatically; run `
 
 The DVC remote used later in the lab is `/tmp/dvc-storage`.
 That directory is ephemeral in a Codespace: rebuilding or deleting the Codespace can remove it, so do not treat it as durable evidence or team storage.
-Save the requested command output and GLaaS artifact link or hash outside that directory.
 
 ### Repository Structure
 
